@@ -11,6 +11,7 @@ use App\Http\Controllers\OntologyClassController;
 use App\Http\Controllers\OntologyController;
 use App\Http\Controllers\OntologyRelationController;
 use App\Http\Controllers\ThesauruController;
+use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserNotificationsController;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +96,9 @@ Route::group([
     Route::get('/warningIndex', [HomeController::class, 'warningIndex'])->name('warningIndex');
     Route::get('/help', [HomeController::class, 'help'])->name('help');
 
+    // Tutorial Editor (only for users with can_edit_tutorial permission)
+    Route::get('/tutorial/editor', [TutorialController::class, 'editor'])->name('tutorial.editor')->middleware('auth');
+
     // AdminController
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index')->middleware('can:eAdmin');
     Route::get('/admin/{id}', [AdminController::class, 'edit'])->name('admin.edit')->middleware('can:eAdmin');
@@ -119,6 +123,9 @@ Route::post('/save');
  // Chat
  Route::post('/updateChat', [ChatController::class, 'updateChat'] )->middleware('can:eModelador');
  Route::post('/sendChat', [ChatController::class, 'sendChat'] )->middleware('can:eModelador');
+
+// Tutorial Editor (save route without localization)
+Route::post('/tutorial/save', [TutorialController::class, 'save'])->middleware('auth');
 
 // Socialite routes
 //Route::get('/redirect', 'SocialAuthFacebookController@redirect');
