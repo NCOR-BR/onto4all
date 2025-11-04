@@ -14,11 +14,7 @@ RUN docker-php-ext-install \
     pdo_mysql \
     bcmath \
     mbstring \
-    tokenizer \
-    xml \
-    ctype \
-    json \
-    openssl
+    xml
 
 WORKDIR /var/www
 COPY . .
@@ -29,7 +25,7 @@ ENV PORT=8000
 
 EXPOSE 80
 
-ENTRYPOINT [ "docker/entrypoint.sh" ]
+ENTRYPOINT [ "Docker/entrypoint.sh" ]
 
 #APACHE
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
