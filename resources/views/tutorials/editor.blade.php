@@ -81,8 +81,9 @@
     <script src="{{ mix('js/app.js') }}"></script>
     <script>
         var quill;
-        var initialContent = {!! json_encode($currentTutorial ? $currentTutorial->content : '') !!};
-        var saveUrl = "{{ url('/tutorial/save') }}";
+        var initialDelta = {!! json_encode(optional($currentTutorial)->content) !!};
+        var initialHtml = {!! json_encode(optional($currentTutorial)->html_content) !!};
+        var saveUrl = "{{ route('tutorial.save', ['locale' => app()->getLocale()]) }}";
         var csrfToken = "{{ csrf_token() }}";
         var cancelUrl = "{{ route('tutorial', app()->getLocale()) }}";
 
@@ -115,14 +116,19 @@
             });
 
             // Carrega o conteúdo inicial se existir
-            if (initialContent) {
+            if (initialDelta) {
                 try {
-                    var delta = JSON.parse(initialContent);
-                    quill.setContents(delta);
-                } catch (e) {
-                    console.warn('Conteúdo inicial não está em formato Delta, usando como texto puro');
-                    quill.setText(initialContent);
+                    quill.setContents(JSON.parse(initialDelta));
+                    return;
+                } catch (error) {
+                    console.warn('Conteúdo inicial não está em formato Delta, tentando colar HTML.', error);
                 }
+            }
+
+            if (initialHtml) {
+                quill.clipboard.dangerouslyPasteHTML(initialHtml);
+            } else if (initialDelta) {
+                quill.setText(initialDelta);
             }
         });
 

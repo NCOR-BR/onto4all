@@ -92,12 +92,13 @@ Route::group([
     // Editor routes
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/aboutUs', [HomeController::class, 'aboutUs'])->name('aboutUs');
-    Route::get('/tutorial', [HomeController::class, 'tutorial'])->name('tutorial');
+    Route::get('/tutorial', [TutorialController::class, 'index'])->name('tutorial');
     Route::get('/warningIndex', [HomeController::class, 'warningIndex'])->name('warningIndex');
     Route::get('/help', [HomeController::class, 'help'])->name('help');
 
     // Tutorial Editor (only for users with can_edit_tutorial permission)
     Route::get('/tutorial/editor', [TutorialController::class, 'editor'])->name('tutorial.editor')->middleware('auth');
+    Route::post('/tutorial/save', [TutorialController::class, 'save'])->name('tutorial.save')->middleware('auth');
 
     // AdminController
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index')->middleware('can:eAdmin');
@@ -123,9 +124,6 @@ Route::post('/save');
  // Chat
  Route::post('/updateChat', [ChatController::class, 'updateChat'] )->middleware('can:eModelador');
  Route::post('/sendChat', [ChatController::class, 'sendChat'] )->middleware('can:eModelador');
-
-// Tutorial Editor (save route without localization)
-Route::post('/tutorial/save', [TutorialController::class, 'save'])->middleware('auth');
 
 // Socialite routes
 //Route::get('/redirect', 'SocialAuthFacebookController@redirect');

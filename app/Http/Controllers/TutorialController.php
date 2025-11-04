@@ -23,7 +23,8 @@ class TutorialController extends Controller
      */
     public function index()
     {
-        $tutorial = Tutorial::getCurrentTutorial();
+        $locale = app()->getLocale();
+        $tutorial = Tutorial::getCurrentTutorial($locale);
         return view('tutorial', compact('tutorial'));
     }
 
@@ -37,7 +38,8 @@ class TutorialController extends Controller
             abort(403, 'Você não tem permissão para editar o tutorial.');
         }
 
-        $currentTutorial = Tutorial::getCurrentTutorial();
+        $locale = app()->getLocale();
+        $currentTutorial = Tutorial::getCurrentTutorial($locale);
         return view('tutorials.editor', compact('currentTutorial'));
     }
 
@@ -71,6 +73,7 @@ class TutorialController extends Controller
                 'content' => $request->input('content'),
                 'html_content' => $request->input('html_content'),
                 'updated_by' => Auth::id(),
+                'locale' => $request->route('locale'),
             ]);
 
             return response()->json([

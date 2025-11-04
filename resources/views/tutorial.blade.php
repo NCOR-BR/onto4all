@@ -31,6 +31,9 @@
 @stop
 
 @section('content')
+    @if(!empty($tutorial?->html_content))
+        {!! $tutorial->boxed_html !!}
+    @else
     <div class="box box-solid">
         <div class="box-header with-border">
             <i class="fa fa-text-width"></i>
@@ -593,8 +596,9 @@
 
         </div>
     </div>
-    
-    
+    @endif
+
+
 @stop
 
 @section('footer')
