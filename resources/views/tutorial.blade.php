@@ -20,6 +20,14 @@
         <li class="active">Tutorial</li>
     </ol>
 
+    @if(Auth::check() && Auth::user()->can_edit_tutorial)
+        <div class="pull-right" style="margin-top: -40px;">
+            <a href="{{ route('tutorial.editor', app()->getLocale()) }}" class="btn btn-primary">
+                <i class="fa fa-edit"></i> Editar Tutorial
+            </a>
+        </div>
+    @endif
+
 @stop
 
 @section('content')
