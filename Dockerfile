@@ -3,35 +3,27 @@ FROM php:8.2-apache AS php
 
 RUN apt-get update -y && apt-get install -y \
     unzip \
-    libpq-dev \
-    libcurl4-gnutls-dev \
     libonig-dev \
-    libxml2-dev \
-    curl \
-    gnupg
-RUN docker-php-ext-install \
-    pdo \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install -j"$(nproc)" \
     pdo_mysql \
     bcmath \
-    mbstring \
-    tokenizer \
-    xml \
-    ctype \
-    json \
-    openssl
+    mbstring
 
 WORKDIR /var/www
-COPY . .
 
 COPY --from=composer:2.7.7 /usr/bin/composer /usr/bin/composer
+COPY Docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY Docker/entrypoint.sh /usr/local/bin/app-entrypoint
+COPY . .
 
-ENV PORT=8000
+RUN chmod +x /usr/local/bin/app-entrypoint \
+    && mkdir -p /var/www/storage /var/www/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+    && a2enmod rewrite
 
 EXPOSE 80
 
-ENTRYPOINT [ "docker/entrypoint.sh" ]
-
-#APACHE
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-RUN a2enmod rewrite
+ENTRYPOINT ["app-entrypoint"]
 CMD ["apache2-foreground"]

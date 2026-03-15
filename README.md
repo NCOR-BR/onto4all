@@ -32,29 +32,65 @@
 
 1. Clone o repositório para seu computador; 
 
-2. Execute o Docker Desktop
+2. Execute o Docker Desktop;
 
-3. Dentro da pasta principal do projeto, execute o comando **docker-compose up --build** 
+3. Na pasta principal do projeto, copie o arquivo de ambiente:
 
-4. Verifique se as imagens do PHP, Apache e database estão rodando corretamente.
+```bash
+cp .env.example .env
+```
 
-5. Configure o arquivo **.env** com as configurações do banco de dados local; 
+4. Revise o `.env` e mantenha estes valores para o ambiente Docker:
 
-**Exemplo:**
+```env
+APP_URL=http://localhost:8000
+DB_CONNECTION=mysql
+DB_HOST=database
+DB_PORT=3306
+DB_DATABASE=onto4all
+DB_USERNAME=onto4all
+DB_PASSWORD=secret
+```
 
-````
+5. Suba a aplicaçao com Docker Compose:
 
-DB_DATABASE=nome_do_seu_banco_de_dados
+```bash
+docker compose up --build
+```
 
-DB_USERNAME=seu_username
+6. Verifique se os containers `app` e `database` iniciaram corretamente.
 
-DB_PASSWORD=sua_password
+7. A aplicaçao ficará disponível em `http://localhost:8000`.
 
-````
+8. O bootstrap do container executa automaticamente:
 
-6. Para executar o projeto, use o comando: **php artisan serve**;
+- `composer install`
+- `php artisan key:generate`
+- `php artisan migrate`
+- `php artisan db:seed` na primeira inicialização de um banco vazio
+- correção de permissões em `storage/` e `bootstrap/cache/` para o Apache gravar logs e cache
 
-7. Acesse a URL indicada no terminal;
+9. Login padrão após o seed inicial:
+
+```text
+email: admin@admin.com.br
+senha: 123456
+```
+
+10. Para derrubar o ambiente:
+
+```bash
+docker compose down
+```
+
+11. Para remover também o volume do banco e recriar tudo do zero:
+
+```bash
+docker compose down -v
+```
+
+12. Se aparecer erro de permissão em `storage/logs/laravel.log` ou `bootstrap/cache`, não use `sudo docker compose`.
+O container já corrige essas permissões no boot; reinicie o serviço `app` para reaplicar o ajuste.
 
 #### Desenvolvimento 
 
