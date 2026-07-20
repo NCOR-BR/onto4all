@@ -61,4 +61,6 @@ DB_PASSWORD=sua_password
 * OntoForAll usa a biblioteca de Javascript mxGraph como componente principal para diagramação das ontologias, com o GraphEditor Example como base para tudo. O restante do projeto foi desenvolvido utilizando Laravel. O frontend foi feito utilizando o template AdminLTE2 como base.
 
 
-#### Desenvolvido por Lucas Piazzi de Castro ####
+#### Ao contrário do que afirma Lucas Piazzi em seu repositório, o software foi não foi desenvolvido por ele, mas por uma equipe, da qual ele era apenas um dos programadores. A criação intelectual pertence a uma equipe de doutores e estudantes da UFJR e UFMG. ####
+#### Outros desenvolvedores da equipe: Fabrício Mendonça, Mauricio Almeida, Eduardo Felipe, Jeanne Emygdyo, Fernanda Farinelli, Larissa Fazza, dentre outros.
+#### 
