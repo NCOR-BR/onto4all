@@ -11,6 +11,7 @@ use App\Http\Controllers\OntologyClassController;
 use App\Http\Controllers\OntologyController;
 use App\Http\Controllers\OntologyRelationController;
 use App\Http\Controllers\ThesauruController;
+use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserNotificationsController;
 use Illuminate\Support\Facades\Route;
@@ -91,9 +92,13 @@ Route::group([
     // Editor routes
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/aboutUs', [HomeController::class, 'aboutUs'])->name('aboutUs');
-    Route::get('/tutorial', [HomeController::class, 'tutorial'])->name('tutorial');
+    Route::get('/tutorial', [TutorialController::class, 'index'])->name('tutorial');
     Route::get('/warningIndex', [HomeController::class, 'warningIndex'])->name('warningIndex');
     Route::get('/help', [HomeController::class, 'help'])->name('help');
+
+    // Tutorial Editor (only for users with can_edit_tutorial permission)
+    Route::get('/tutorial/editor', [TutorialController::class, 'editor'])->name('tutorial.editor')->middleware('auth');
+    Route::post('/tutorial/save', [TutorialController::class, 'save'])->name('tutorial.save')->middleware('auth');
 
     // AdminController
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index')->middleware('can:eAdmin');

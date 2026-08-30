@@ -33,7 +33,8 @@ class User extends Authenticatable
         'email',
         'password',
         'ontology',
-        'avatar_url'
+        'avatar_url',
+        'can_edit_tutorial'
     ];
 
     protected $guarded = [

@@ -34,6 +34,11 @@ class AuthServiceProvider extends ServiceProvider
             return ($user->categoria == "modelador" ? true : $user->categoria == "administrador");
         });
 
+        // Permission to edit tutorial
+        Gate::define('canEditTutorial', function ($user) {
+            return $user->can_edit_tutorial == true;
+        });
+
 
     }
 }

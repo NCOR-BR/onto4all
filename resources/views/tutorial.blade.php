@@ -20,9 +20,20 @@
         <li class="active">Tutorial</li>
     </ol>
 
+    @if(Auth::check() && Auth::user()->can_edit_tutorial)
+        <div class="pull-right" style="margin-top: -40px;">
+            <a href="{{ route('tutorial.editor', app()->getLocale()) }}" class="btn btn-primary">
+                <i class="fa fa-edit"></i> Editar Tutorial
+            </a>
+        </div>
+    @endif
+
 @stop
 
 @section('content')
+    @if(!empty($tutorial?->html_content))
+        {!! $tutorial->boxed_html !!}
+    @else
     <div class="box box-solid">
         <div class="box-header with-border">
             <i class="fa fa-text-width"></i>
@@ -585,8 +596,9 @@
 
         </div>
     </div>
-    
-    
+    @endif
+
+
 @stop
 
 @section('footer')

@@ -7,7 +7,20 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+import Vue from 'vue';
+window.Vue = Vue;
+
+/**
+ * Register Vue Components
+ */
+
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('tutorial-editor', require('./components/TutorialEditor.vue').default);
+
+// SweetAlert2 para alerts
+import Swal from 'sweetalert2'
+window.Swal = Swal;
+Vue.prototype.$swal = Swal;
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,8 +28,5 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
-
-const app = new Vue({
-    el: '#app'
-});
+// A instância Vue é criada nas views individuais quando necessário
+// Isso permite melhor controle sobre qual elemento será montado

@@ -1,0 +1,54 @@
+#!/bin/bash
+set -euo pipefail
+
+yum update -y
+amazon-linux-extras install docker -y
+yum install -y awscli
+
+systemctl enable docker
+systemctl start docker
+
+aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecr_repo_url}
+
+docker pull ${ecr_repo_url}:${image_tag}
+
+docker network create app-net || true
+
+docker run -d --name db \
+  --restart unless-stopped \
+  --network app-net \
+  -e MYSQL_DATABASE=${db_name} \
+  -e MYSQL_USER=${db_user} \
+  -e MYSQL_PASSWORD=${db_password} \
+  -e MYSQL_ROOT_PASSWORD=${db_password} \
+  mysql:8.0
+
+for i in {1..30}; do
+  if docker exec db sh -c 'mysqladmin ping -h "127.0.0.1" -u root -p"$MYSQL_ROOT_PASSWORD" --silent'; then
+    break
+  fi
+  sleep 2
+done
+
+PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || true)
+if [ -n "$PUBLIC_IP" ]; then
+  APP_URL="http://${PUBLIC_IP}"
+else
+  APP_URL="http://localhost"
+fi
+
+docker run -d --name app \
+  --restart unless-stopped \
+  --network app-net \
+  -p 80:8000 \
+  -e APP_ENV=${app_env} \
+  -e APP_DEBUG=${app_debug} \
+  -e APP_URL=${APP_URL} \
+  -e DB_CONNECTION=mysql \
+  -e DB_HOST=db \
+  -e DB_PORT=3306 \
+  -e DB_DATABASE=${db_name} \
+  -e DB_USERNAME=${db_user} \
+  -e DB_PASSWORD=${db_password} \
+  -e PORT=8000 \
+  ${ecr_repo_url}:${image_tag}
